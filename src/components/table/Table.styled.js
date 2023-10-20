@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 export const Conteiner = styled.div`
 max-width: 768px;
-height: 500px;
+height: 80%;
 `;
 
 export const WrapperModal = styled.div`
