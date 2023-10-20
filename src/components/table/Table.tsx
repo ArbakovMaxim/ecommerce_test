@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { fetchPokemonListWithDetails } from "../../api/Api";
-import { Conteiner } from "./Table.styled";
+import { Conteiner, WrapperModal } from "./Table.styled";
+import PokemonModal from "../modal/Modal";
 
 interface PokemonDetails {
   name: string;
@@ -9,9 +10,9 @@ interface PokemonDetails {
   smallImage: string;
   largeImage: string;
 }
-
 export const Table: React.FC = () => {
   const [pokemonList, setPokemonList] = useState<PokemonDetails[]>([]);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +25,14 @@ export const Table: React.FC = () => {
 
   console.log(pokemonList);
 
+  const openModal = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+  };
+
+  const closeModal = () => {
+    setSelectedImage(null);
+  };
+
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 100 },
     {
@@ -35,6 +44,7 @@ export const Table: React.FC = () => {
           src={params.value}
           alt="Pokemon"
           style={{ width: "100%", height: "100%", objectFit: "contain" }}
+          onClick={() => openModal(params.value)}
         />
       ),
     },
@@ -50,6 +60,31 @@ export const Table: React.FC = () => {
         autoPageSize
         columnHeaderHeight={70}
       />
+      {selectedImage && (
+        <PokemonModal
+          isOpen={!!selectedImage}
+          onRequestClose={closeModal}
+          contentLabel={""}
+          style={{
+            content: {
+              width: "50%",
+              maxWidth: "600px",
+              maxHeight: "600px",
+              margin: "auto",
+              height: "50%",
+              background: "#f0f0f0",
+            },
+          }}
+        >
+          <WrapperModal>
+            <img
+              src={selectedImage}
+              alt="Selected Pokemon"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            />
+          </WrapperModal>
+        </PokemonModal>
+      )}
     </Conteiner>
   );
 };
